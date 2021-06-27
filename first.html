@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+
+
+<script type="text/javascript">
+  $(function() {
+    // var drp = $('#reportrange').data('daterangepicker');
+  
+      var start = moment();
+      var end = moment();
+  
+      function cb(start, end) {
+          $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+      }
+
+      $('#reportrange').daterangepicker({
+          startDate: start,
+          endDate: end,
+          ranges: {
+             'Today': [moment(), moment()],
+             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+             'This Month': [moment().startOf('month'), moment().endOf('month')],
+             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          },
+          autoUpdateInput: true
+      }, cb);
+
+
+  
+      cb(start, end);
+      // $('#reportrange').data('daterangepicker').setStart('2021-01-01');
+      // $('#reportrange').data('daterangepicker').setEnd('2021-01-0');
+      
+      // var startDate;
+      // $('#reportrange').daterangepicker(
+      //   {
+      //     ranges: {
+      //        'Today': [moment(), moment()],
+      //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      //        'This Month': [moment().startOf('month'), moment().endOf('month')],
+      //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      //     },
+          
+      //   startdate: moment(),
+      //   endDate: moment()
+      //   },
+      //   function(start,end){
+      //     $('#reportrange span').html(start.format('MMMM D, YYYY') + '-' + end.format('MMMM D, YYYY'));
+      //     startDate = start.format('YYYY-MM-DD');
+      //     endDate = end.format('YYYY-MM-DD');
+      //     $('#reportrange span').ranges.Today
+
+      //   }
+      // );
+
+      var x = start.format('YYYY-MM-DD');
+  
+    $.ajax({
+        url: `http://localhost:8000/getData?RequestId=${x}`,
+        // dataType: "jsonp",
+        data: '{"data": "json"}',
+        type: 'GET',
+        jsonpCallback: 'callback', // this is not relevant to the POST anymore
+        success: 
+        function (data) {
+            // var ret = jQuery.parseJSON(data);
+            // $('#demo').html(ret.msg);
+            $('#demo').html(data);
+            return data;
+            console.log('Success: ')
+            
+        },
+        error: function (xhr, status, error) {
+            console.log('Error: ' + error.message);
+            $('#demo').html('Error connecting to the server.');
+        },
+    });
+
+  
+  });
+  </script>
+
+</head>
+<body>
+  <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 20%">
+    <i class="fa fa-calendar"></i>&nbsp;
+    <span></span> <i class="fa fa-caret-down"></i>
+</div>
+<p id="demo"></p>
+  
+</body>
+</html>
